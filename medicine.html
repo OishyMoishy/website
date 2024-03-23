@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Information - MEDI CARE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .search-bar {
+            position: relative;
+            width: 30%;
+            background-color: var(--green);
+            border-radius: 10px;
+            padding: 5px;
+            z-index: 1000;
+            position: fixed;
+            top: 25px; /* Adjust this value based on your header height */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .search-input {
+            width: 100%; /* Adjusted width for responsiveness */
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            font-size: 16px;
+            color: black;
+        }
+
+        .search-input::placeholder {
+            color: #ccc;
+        }
+
+        .header {
+            position: relative;
+        }
+
+
+        /* Media query for smaller devices */
+        @media screen and (max-width: 600px) {
+            .search-bar {
+                top: 5px;
+                width: calc(70% - 20px); /* Adjusted width for smaller devices */
+                max-width: 250px; /* Limiting maximum width for smaller devices */
+                left: calc(5% - 10px); /* Slightly move to the right */
+                transform: translateX(0%);
+            }
+            .header {
+                padding: 3.5rem;
+                position: fixed;
+            }
+            .header .logo {
+                display: none; /* Hide the logo */
+            }
+
+            /* Adjusting position for the menu button */
+            #menu-btn {
+                position: absolute;
+                top: 50%;
+                right: 20px; /* Adjust this value according to your design */
+                transform: translateY(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <a href="#" class="logo"> <i class="fas fa-heartbeat"></i>MEDI CARE</a>
+    <nav class="navbar">
+        <a href="index.html#home">Home</a>
+    </nav>
+    <div id="menu-btn" class="fas fa-bars"></div>
+</header>
+<section>
+    <div class="search-bar">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search by name or category">
+    </div>
+</section>
+<section class="medicine" id="medicine">
+    <h1 class="heading"><span>medicines</span> </h1>
+    <div class="box-container" id="box-container"></div>
+</section>
+
+<footer class="footer">
+    <!-- Footer content if needed -->
+</footer>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const medicine = [
+            { name: "Napa 500mg", category: "paracetamol", image: "napa-500-mg-1634182813132.jpg" },
+            { name: "Ace Plus", category: "paracetamol", image: "ACE-PLUS-ePharma-Latifpur.jpg" },
+            { name: "Angilock", category: "Hypertension", image: "angilockHIGHPRESSURE.jpg" },
+            { name: "Omeprazole", category: "Gastric Pain", image: "20210425_004529_958094_Omeprazole.max-1800x1800.jpg" },
+            { name: "Betabis", category: "Hypertension", image: "betabisHIGHPRESSURE.jpg" },
+            { name: "Maxima", category: "Gastric Pain", image: "maxima.jpg" },
+            { name: "Maxpro", category: "Gastric Pain", image: "Maxpro-20-Tablet.jpg" },
+            { name: "Napa Extend", category: "paracetamol", image: "napa-extend-tablet-665mg-12-tablets.jpg" },
+            { name: "Povital", category: "Nerve", image: "povitalNERVEMED.jpg" }
+            // Add more medicines as needed
+        ];
+
+        const boxContainer = document.getElementById("box-container");
+        const searchInput = document.getElementById("searchInput");
+
+        function renderMedicine(medArray, searchTerm) {
+            // Clear the box container
+            boxContainer.innerHTML = "";
+
+            // Convert search term to lowercase for case-insensitive search
+            const searchTermLower = searchTerm.toLowerCase();
+
+            // Filter the medicine array based on the search term
+            const filteredMedArray = medArray.filter(medicine
+            => {
+                return medicine.name.toLowerCase().includes(searchTermLower) ||
+                    medicine.category.toLowerCase().includes(searchTermLower);
+            });
+
+            // Loop through the filtered medicine array and create medicine boxes
+            filteredMedArray.forEach(medicine => {
+                const box = document.createElement("div");
+                box.className = "box";
+
+                const img = document.createElement("img");
+                img.src = medicine.image;
+                img.alt = medicine.name;
+
+                const name = document.createElement("h3");
+                name.textContent = medicine.name;
+
+                const category = document.createElement("span");
+                category.textContent = "Category: " + medicine.category;
+
+                box.appendChild(img);
+                box.appendChild(name);
+                box.appendChild(category);
+
+                // Append the medicine box to the box container
+                boxContainer.appendChild(box);
+            });
+        }
+
+        function filterMedicine(searchTerm) {
+            renderMedicine(medicine, searchTerm);
+        }
+
+        searchInput.addEventListener("input", function() {
+            filterMedicine(this.value.trim());
+        });
+
+        renderMedicine(medicine);
+    });
+</script>
+</body>
+</html>
