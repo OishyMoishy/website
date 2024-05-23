@@ -1,14 +1,10 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "medicare";
-
-// Establish connection
-$con = mysqli_connect($servername, $username, $password, $database);
-
-// Check connection
-if (!$con) {
-    die("Connection failed: " . mysqli_connect_error());
+$servername="localhost";
+$username="root";
+$password="";
+$database="webprac";
+$conn=mysqli_connect($servername,$username,$password,$database);
+if (!$conn)
+{
+	echo "Connection failed";
 }
-?>

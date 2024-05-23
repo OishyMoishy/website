@@ -1,38 +1,42 @@
 <?php
+// Start PHP session
+session_start();
+
 // Include the database connection file
 include 'database.php';
 
 // Check if the form was submitted
-if(isset($_POST['username'], $_POST['email'], $_POST['password'])) {
+if(isset($_POST['name'], $_POST['email'], $_POST['password'], $_POST['address'], $_POST['about'], $_POST['phone'])) {
     // Retrieve form data
-    $username = mysqli_real_escape_string($con, $_POST['username']);
-    $email = mysqli_real_escape_string($con, $_POST['email']);
-    $password = mysqli_real_escape_string($con, $_POST['password']);
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $address = mysqli_real_escape_string($conn, $_POST['address']);
+    $about = mysqli_real_escape_string($conn, $_POST['about']);
+    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
 
     // Construct SQL query
-    $sql = "INSERT INTO userlogin (username, email, password) VALUES ('$username', '$email', '$password')";
+    $sql = "INSERT INTO appoint(name, email, password, address, about, phone) VALUES ('$name', '$email', '$password', '$address', '$about', '$phone')";
 
     // Execute SQL query
-    if(mysqli_query($con, $sql)) {
-        // Start PHP session
-        session_start();
-
-        // Store user data in session variables
-        $_SESSION['username'] = $username;
+    if(mysqli_query($conn, $sql)) {
+        // Set session variables
+        $_SESSION['user_id'] = mysqli_insert_id($conn);
+        $_SESSION['name'] = $name;
         $_SESSION['email'] = $email;
 
-        // Redirect user to profile page
-        header("Location: profile.php");
+        // Redirect user to dashboard page
+        header("Location: dashboard.php");
         exit();
     } else {
         // Error inserting data
-        echo "Error: " . mysqli_error($con);
+        echo '<div class="container"><p>Error: ' . mysqli_error($conn) . '</p></div>';
     }
 } else {
     // Form not submitted
-    echo "Form not submitted.";
+    echo '<div class="container"><p>Form not submitted.</p></div>';
 }
 
 // Close database connection
-mysqli_close($con);
+mysqli_close($conn);
 ?>
