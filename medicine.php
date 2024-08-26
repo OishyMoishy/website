@@ -77,6 +77,106 @@
     margin: 2rem;
 }
 
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1001; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    border-radius: 10px;
+    position: relative;
+    text-align: center;
+}
+
+.modal-content p {
+    text-align: left;
+}
+
+.modal-content h4 {
+    font-size: 15px;
+    color: var(--green);
+    margin-top: 10px;
+}
+
+.modal-content img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.similar-medicines {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.similar-medicines .box {
+    cursor: pointer;
+    flex: 1 1 calc(25% - 20px); /* Responsive card size */
+    max-width: calc(25% - 20px); /* Max width for each card */
+    box-sizing: border-box;
+    padding: 15px;
+    margin: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    text-align: center;
+}
+
+.similar-medicines .box img {
+    width: 100px; /* Set a fixed width for all images */
+    height: 100px; /* Set a fixed height for all images */
+    object-fit: cover; /* Crop the image to cover the box */
+    border-radius: 5px; /* Optional: rounded corners */
+    margin-bottom: 10px;
+}
+
+.similar-medicines .box h3 {
+    font-size: 14px;
+    margin: 10px 0 5px 0;
+}
+
+/* Responsive styles for the modal */
+@media screen and (max-width: 600px) {
+    .modal-content {
+        width: 90%;
+        margin: 30% auto;
+    }
+}
+
 /* Media query for smaller devices */
 @media screen and (max-width: 600px) {
     .search-bar {
@@ -106,68 +206,177 @@
     }
 }
 
-/* New styles */
-.box {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 15px;
-    margin: 10px;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
 .box:hover {
     transform: scale(1.05);
 }
 
+
 </style>  
 </head>
 <body>
-<header class="header">
-    <a href="#" class="logo"> <i class="fas fa-heartbeat"></i>MEDI CARE</a> 
-    <nav class="navbar">
-        <a href="index.php#home">Home</a>
-        <a href="#services">Services</a>
-        <a href="medicine.php">Medicine</a>
-        <a href="doctor.php">Doctors</a>
-        <a href="location.php">Locations</a>
-        <a href="#about">About</a>
-    </nav>
-    <div id="menu-btn" class="fas fa-bars"></div>
-    <div class="search-bar">
-        <input type="text" class="search-input" id="searchInput" placeholder="Search by name, specialization, or hospital">
-    </div>
+    <header class="header">
+        <a href="#" class="logo"> <i class="fas fa-heartbeat"></i>MEDI CARE</a> 
+        <nav class="navbar">
+            <a href="index.html#home">Home</a>
+            <a href="#services">Services</a>
+            <a href="medicine.html">Medicine</a>
+            <a href="doctor.html">Doctors</a>
+            <a href="location.html">Locations</a>
+            <a href="#about">About</a>
+        </nav>
+        <div id="menu-btn" class="fas fa-bars"></div>
+        <div class="search-bar">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search by name, specialization, or hospital">
+        </div>
     </header>
-
-<section class="doctors" id="doctors">
-    <h1 class="heading">Medicine <span>Info</span> </h1>
-    <div class="box-container" id="box-container"></div>
-</section>
-
-<footer class="footer">
-    <!-- Footer content if needed -->
-</footer>
-
+    
+    <section class="doctors" id="doctors">
+        <h1 class="heading">Medicine <span>Info</span> </h1>
+        <div class="box-container" id="box-container"></div>
+    </section>
+    
+    <!-- Modal structure -->
+    <div id="medicineModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="modalImg" src="" alt="Medicine Image">
+            <h3 id="modalName"></h3>
+            <p><strong>Ingredients: </strong><span id="modalIngredients"></span></p>
+            <p><strong>Indication: </strong><span id="modalIndication"></span></p>
+            <p><strong>Company: </strong><span id="modalCompany"></span></p>
+            <h4>Similar Medicines:</h4>
+            <div id="similarMedicines" class="similar-medicines"></div>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <!-- Footer content if needed -->
+    </footer>
+    
+    <script src="script.js"></script>
+    </body>
+    
+    
 <script src="script.js"></script>
 <script>
- document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
     const medicines = [
-        { name: "Napa 500mg", Ingredients: "500 mg Paracetemol BP, 65 mg Caffeine BP", indication: "Paracetamol", company: "Square Limited", image: "image/napa-500-mg-1634182813132.jpg" },
-        { name: "Adlock 10 mg", Type: "Tablet", Ingredients: "Propranolol Hydrochloride", indication: "Tuberculosis,Hypertrophic cardiomyopathy,MI,Anxiety,Diabetic nephropathy,HTN,Cardiac arrhythmias,Angina pectoris,Phaeochromocytoma,Migraine prophylaxis,Essential tremor", company: "Sonear Laboratories Ltd", image: "MedicineImg/adlock.jpg" },
-        { name: "Adrox", Type: "Suspension", Ingredients: "Cefuroxime 125 mg", indication: "Pharyngitis,Acute otitis media,Lyme disease,Susceptible infections,Sinusitis,Otitis media,Skin,Skin structure infections,Tonsillitis,Respiratory tract infections,Acute Maxillary Sinusitis,Urinary tract infections,Acute bacterial exacerbation of chronic bronchitis,Surgical Prophylaxis", company: "Ad-din Pharmaceuticals Ltd", image: "MedicineImg/adrox.jpg" },
-        { name: "Clamox 375", Type: "Tablet", Ingredients: "Amoxicillin + Clavulanic Acid", indication: "Bacterial infections,Acute otitis media,Acute bacterial sinusitis,Endocarditis,Dental abscess,H. pylori infection,Community-acquired pneumonia,Acute uncomplicated UTI,Uncomplicated gonorrhea,Severe or recurrent resp tract infections", company: "Opsonin Pharma Limited", image: "MedicineImg/clamox-375-mg-1631621681144.jpg" },
-        { name: "Vasco", Type: "Syrup", Ingredients: "Vitamin C (Ascorbic Acid)", indication: "Treatment or prevention of Vitamin C Deficiency, Scurvy, Infection,Trauma,Burns, Cold exposure,Following Surgery,Common cold,Fever,Scurvy,Stress,Cancer, Methaemoglobinaemia, Children receiving unfortified formulas. Also indicated in Hematuria,Dental Caries,Gum Diseases,Pyorrhea,Acne,Infertility, Atherosclerosis,Fractures,Leg ulcers,Hay fever,Vascular thrombosis prevention,Levodopa toxicity,Arsenic toxicity,Etc.", company: "Opsonin Pharma Limited", image: "MedicineImg/vasco.jpg" },
-        { name: "Aspidol", Type: "Tablet", Ingredients: "Aspirin 100mg", indication: "Pain relief, Fever reduction, Anti-inflammatory, Blood thinner", company: "Medico Ltd", image: "MedicineImg/aspidol.jpg" },
-        { name: "Azithrocin", Type: "Tablet", Ingredients: "Azithromycin 500mg", indication: "Bacterial infections, Respiratory infections, Skin infections, Ear infections, STIs", company: "Pharma Corp", image: "MedicineImg/azithrocin.jpg" },
-        { name: "Cetrimide", Type: "Cream", Ingredients: "Cetrimide 0.5%", indication: "Antiseptic, Skin infections, Minor cuts, Burns, Wounds", company: "SkinHeal Ltd", image: "MedicineImg/cetrimide.jpg" },
-        { name: "Dolo 650", Type: "Tablet", Ingredients: "Paracetamol 650mg", indication: "Pain relief, Fever reduction", company: "HealthCare Pharma", image: "MedicineImg/dolo650.jpg" },
-        { name: "Erythrocin", Type: "Tablet", Ingredients: "Erythromycin 250mg", indication: "Bacterial infections, Respiratory infections, Skin infections, STIs", company: "MedLife Ltd", image: "MedicineImg/erythrocin.jpg" }
+        // Category: Fever/Pain Relief
+        { name: "Napa", Ingredients: "Paracetamol 500mg", indication: "Fever, Pain relief", company: "Beximco Pharmaceuticals Ltd", image: "medicineImg/napa-500-mg-1634182813132.jpg" },
+        { name: "Ace", Ingredients: "Paracetamol 500mg", indication: "Fever, Pain relief", company: "Square Pharmaceuticals Ltd", image: "medicineImg/ace-500-mg-tablet.jpg" },
+        { name: "Dolo 650", Ingredients: "Paracetamol 650mg", indication: "Fever, Pain relief", company: "HealthCare Pharma", image: "medicineImg/dolo-650mg.jpg" },
+        { name: "Napa Extra", Ingredients: "Paracetamol 500mg, Caffeine 65mg", indication: "Fever, Pain relief", company: "Beximco Pharmaceuticals Ltd", image: "medicineImg/napa-extra.jpg" },
+        { name: "Tylenol", Ingredients: "Paracetamol 500mg", indication: "Fever, Pain relief", company: "Johnson & Johnson", image: "medicineImg/tylenol.jpg" },
+        { name: "Amdocal", Ingredients: "Amlodipine 5mg", indication: "Hypertension, Angina", company: "Square Pharmaceuticals Ltd", image: "medicineImg/amdocal.jpg" },
+        { name: "Cef-3", Ingredients: "Cefixime 200mg", indication: "Bacterial infections", company: "Square Pharmaceuticals Ltd", image: "medicineImg/cef3.jpg" },
+        { name: "Flamex", Ingredients: "Ibuprofen 400mg", indication: "Pain, Inflammation", company: "ACI Limited", image: "medicineImg/flamex.jpg" },
+        { name: "Panadol", Ingredients: "Paracetamol 500mg", indication: "Fever, Pain relief", company: "GSK", image: "medicineImg/panadol.jpg" },
+        { name: "Amoxil", Ingredients: "Amoxicillin 500mg", indication: "Bacterial infections", company: "Beximco Pharmaceuticals Ltd", image: "medicineImg/amoxil.jpg" },
+        { name: "Zithrin", Ingredients: "Azithromycin 500mg", indication: "Respiratory infections", company: "Square Pharmaceuticals Ltd", image: "medicineImg/zithrin.jpg" },
+        { name: "Ciprocin", Ingredients: "Ciprofloxacin 500mg", indication: "Bacterial infections", company: "Opsonin Pharma Ltd", image: "medicineImg/ciprocin.jpg" },
+        { name: "Adrox", Ingredients: "Cefuroxime 500mg", indication: "Bacterial infections", company: "Ad-din Pharmaceuticals Ltd", image: "medicineImg/adrox.jpg" },
+        { name: "Erythrocin", Ingredients: "Erythromycin 250mg", indication: "Bacterial infections", company: "MedLife Ltd", image: "medicineImg/erythrocin.jpg" },
+        { name: "Clamox", Ingredients: "Amoxicillin 500mg, Clavulanic Acid", indication: "Bacterial infections", company: "Opsonin Pharma Limited", image: "medicineImg/clamox.jpg" },
+        { name: "Levoflox", Ingredients: "Levofloxacin 500mg", indication: "Bacterial infections", company: "Drug International Ltd.", image: "medicineImg/levoflox.jpg" },
+        { name: "Moxaclav", Ingredients: "Amoxicillin 500mg, Clavulanic Acid", indication: "Bacterial infections", company: "Incepta Pharmaceuticals Ltd", image: "medicineImg/moxaclav.jpg" },
+        { name: "Losectil", Ingredients: "Omeprazole 20mg", indication: "GERD, Peptic ulcers", company: "Incepta Pharmaceuticals Ltd", image: "medicineImg/losectil.jpg" },
+        { name: "Panoral", Ingredients: "Pantoprazole 40mg", indication: "Acid reflux, GERD", company: "Eskayef Pharmaceuticals Ltd", image: "medicineImg/panoral.jpg" },
+        { name: "Nexum", Ingredients: "Esomeprazole 20mg", indication: "GERD, Acid reflux", company: "Square Pharmaceuticals Ltd", image: "medicineImg/nexum.jpg" },
+        { name: "Ranitid", Ingredients: "Ranitidine 150mg", indication: "Heartburn, GERD", company: "Square Pharmaceuticals Ltd", image: "medicineImg/rantid.jpg" },
+        { name: "Omeprazole", Ingredients: "Omeprazole 20mg", indication: "GERD, Peptic ulcers", company: "Ad-din Pharmaceuticals Ltd", image: "medicineImg/Omrazole-20.jpg" },
+        { name: "Alatrol", Ingredients: "Cetirizine Hydrochloride 10mg", indication: "Allergic rhinitis", company: "Square Pharmaceuticals Ltd", image: "medicineImg/alatrol.jpg" },
+        { name: "Cetrim", Ingredients: "Cetirizine 10mg", indication: "Allergic rhinitis", company: "Square Pharmaceuticals Ltd", image: "medicineImg/ciprocin.jpg" },
+        { name: "Allergex", Ingredients: "Chlorpheniramine 4mg", indication: "Allergic reactions", company: "ACI Limited", image: "medicineImg/ciprocin.jpg" },
+        { name: "Fexo", Ingredients: "Fexofenadine 180mg", indication: "Allergic rhinitis", company: "Incepta Pharmaceuticals Ltd", image: "medicineImg/ciprocin.jpg" },
+        { name: "Loratin", Ingredients: "Loratadine 10mg", indication: "Allergic rhinitis", company: "Square Pharmaceuticals Ltd", image: "medicineImg/ciprocin.jpg" },
+        { name: "Xyzal", Ingredients: "Levocetirizine 5mg", indication: "Allergic rhinitis", company: "Square Pharmaceuticals Ltd", image: "medicineImg/ciprocin.jpg" },
+        { name: "Benadryl", Ingredients: "Diphenhydramine 25mg", indication: "Allergic reactions", company: "Johnson & Johnson", image: "medicineImg/ciprocin.jpg" },
+        { name: "Zyrtec", Ingredients: "Cetirizine 10mg", indication: "Allergic rhinitis", company: "Johnson & Johnson", image: "medicineImg/ciprocin.jpg" },
+        { name: "Claritin", Ingredients: "Loratadine 10mg", indication: "Allergic rhinitis", company: "Bayer", image: "medicineImg/ciprocin.jpg" },
+        { name: "Alatrol", Ingredients: "Cetirizine 10mg", indication: "Allergic rhinitis", company: "Incepta Pharmaceuticals Ltd", image: "medicineImg/ciprocin.jpg" },
+        { name: "Histacough", Ingredients: "Dextromethorphan 10mg", indication: "Cough relief", company: "Beximco Pharmaceuticals Ltd", image: "" },
+        { name: "Colgin", Ingredients: "Dextromethorphan 10mg", indication: "Cough relief", company: "Incepta Pharmaceuticals Ltd", image: "" },
+        { name: "Tussin", Ingredients: "Dextromethorphan 20mg", indication: "Cough relief", company: "ACI Limited", image: "" },
+        { name: "Tuska", Ingredients: "Dextromethorphan 15mg", indication: "Cough relief", company: "Eskayef Pharmaceuticals Ltd", image: "" },
+        { name: "Vicks Cough", Ingredients: "Dextromethorphan 10mg", indication: "Cough relief", company: "Procter & Gamble", image: "" },
+        { name: "Benylin", Ingredients: "Dextromethorphan 7.5mg", indication: "Cough relief", company: "Johnson & Johnson", image: "" },
+        { name: "Triaminic", Ingredients: "Chlorpheniramine 1mg, Phenylephrine 2.5mg", indication: "Cold, Cough", company: "Novartis", image: "" },
+        { name: "Mucinex", Ingredients: "Guaifenesin 600mg", indication: "Cough, Chest congestion", company: "Reckitt Benckiser", image: "" },
+        { name: "Robitussin", Ingredients: "Dextromethorphan 10mg", indication: "Cough relief", company: "Pfizer", image: "" },
+        { name: "Dextro", Ingredients: "Dextromethorphan 15mg", indication: "Cough relief", company: "Opsonin Pharma Ltd", image: "" },
+        { name: "Imodium", Ingredients: "Loperamide 2mg", indication: "Diarrhea relief", company: "Johnson & Johnson", image: "" },
+        { name: "Diarex", Ingredients: "Loperamide 2mg", indication: "Diarrhea relief", company: "Eskayef Pharmaceuticals Ltd", image: "" },
+        { name: "Entamizole", Ingredients: "Metronidazole 500mg, Diloxanide Furoate 500mg", indication: "Amoebic dysentery", company: "Square Pharmaceuticals Ltd", image: "" },
+        { name: "Flagyl", Ingredients: "Metronidazole 400mg", indication: "Bacterial infections", company: "Sanofi", image: "" },
+        { name: "Orsaline-N", Ingredients: "Oral Rehydration Salts", indication: "Dehydration", company: "ACME Laboratories Ltd", image: "" },
+        { name: "Dioralyte", Ingredients: "Oral Rehydration Salts", indication: "Dehydration", company: "Roche", image: "" },
+        { name: "Pedialyte", Ingredients: "Oral Rehydration Salts", indication: "Dehydration", company: "Abbott", image: "" },
+        { name: "Oral Saline", Ingredients: "Oral Rehydration Salts", indication: "Dehydration", company: "Beximco Pharmaceuticals Ltd", image: "" },
+        { name: "Metronidazole", Ingredients: "Metronidazole 400mg", indication: "Bacterial infections", company: "ACI Limited", image: "" },
+        { name: "Zincet", Ingredients: "Zinc Sulfate 20mg", indication: "Diarrhea, Zinc deficiency", company: "Square Pharmaceuticals Ltd", image: "" },
+        { name: "Amdocal", Ingredients: "Amlodipine 5mg", indication: "Hypertension, Angina", company: "Square Pharmaceuticals Ltd", image: "" },
+        { name: "Cardovas", Ingredients: "Bisoprolol 5mg", indication: "Hypertension, Heart failure", company: "Incepta Pharmaceuticals Ltd", image: "" },
+        { name: "Concor", Ingredients: "Bisoprolol 5mg", indication: "Hypertension, Heart failure", company: "Merck", image: "" },
+        { name: "Losartan", Ingredients: "Losartan 50mg", indication: "Hypertension", company: "Square Pharmaceuticals Ltd", image: "" },
+        { name: "Natrilix", Ingredients: "Indapamide 1.5mg", indication: "Hypertension", company: "Servier", image: "" },
+        { name: "Aten", Ingredients: "Atenolol 50mg", indication: "Hypertension, Angina", company: "Square Pharmaceuticals Ltd", image: "" },
+        { name: "Olmetec", Ingredients: "Olmesartan 20mg", indication: "Hypertension", company: "Daiichi Sankyo", image: "" },
+        { name: "Norvasc", Ingredients: "Amlodipine 5mg", indication: "Hypertension, Angina", company: "Pfizer", image: "" },
+        { name: "Plendil", Ingredients: "Felodipine 5mg", indication: "Hypertension, Angina", company: "AstraZeneca", image: "" },
+        { name: "Amlodipine", Ingredients: "Amlodipine 5mg", indication: "Hypertension, Angina", company: "ACI Limited", image: "" },
+        { name: "Metfor", Ingredients: "Metformin 500mg", indication: "Type 2 Diabetes", company: "Square Pharmaceuticals Ltd", image: "" },
+        { name: "Diabetmin", Ingredients: "Metformin 500mg", indication: "Type 2 Diabetes", company: "Incepta Pharmaceuticals Ltd", image: "" },
+        { name: "Gluformin", Ingredients: "Metformin 500mg", indication: "Type 2 Diabetes", company: "Beximco Pharmaceuticals Ltd", image: "" },
+        { name: "Glyset", Ingredients: "Miglitol 25mg", indication: "Type 2 Diabetes", company: "Pfizer", image: "" },
+        { name: "Glucophage", Ingredients: "Metformin 500mg", indication: "Type 2 Diabetes", company: "Merck", image: "" },
+        { name: "Jardiance", Ingredients: "Empagliflozin 10mg", indication: "Type 2 Diabetes", company: "Boehringer Ingelheim", image: "" },
+        { name: "Galvus", Ingredients: "Vildagliptin 50mg", indication: "Type 2 Diabetes", company: "Novartis", image: "" },
+        { name: "Amaryl", Ingredients: "Glimepiride 1mg", indication: "Type 2 Diabetes", company: "Sanofi", image: "" },
+        { name: "Diaben", Ingredients: "Gliclazide 80mg", indication: "Type 2 Diabetes", company: "Square Pharmaceuticals Ltd", image: "" },
+        { name: "Diabex", Ingredients: "Metformin 500mg", indication: "Type 2 Diabetes", company: "HealthCare Pharma", image: "" },
+        { name: "Celin", Ingredients: "Vitamin C 500mg", indication: "Vitamin C deficiency", company: "Square Pharmaceuticals Ltd", image: "" },
+        { name: "Beplex Forte", Ingredients: "B-Complex, Vitamin C", indication: "Vitamin B deficiency", company: "Incepta Pharmaceuticals Ltd", image: "" },
+        { name: "Neurobion", Ingredients: "Vitamin B1, B6, B12", indication: "Vitamin B deficiency", company: "Merck", image: "" },
+        { name: "Calci-D", Ingredients: "Calcium, Vitamin D3", indication: "Calcium & Vitamin D deficiency", company: "Beximco Pharmaceuticals Ltd", image: "" },
+        { name: "Ferros", Ingredients: "Ferrous Sulfate", indication: "Iron deficiency anemia", company: "Square Pharmaceuticals Ltd", image: "" },
+                { name: "Calcit", Ingredients: "Calcium Carbonate, Vitamin D3", indication: "Calcium & Vitamin D deficiency", company: "Square Pharmaceuticals Ltd", image: "" },
+        { name: "Zincovit", Ingredients: "Zinc, Vitamin C", indication: "Zinc deficiency, Immunity", company: "Eskayef Pharmaceuticals Ltd", image: "" },
+        { name: "Centrum", Ingredients: "Multivitamins, Multiminerals", indication: "General health", company: "Pfizer", image: "" },
+        { name: "Vitrum", Ingredients: "Multivitamins, Multiminerals", indication: "General health", company: "Pharmaton", image: "" },
+        { name: "Cavit", Ingredients: "Calcium, Vitamin D3", indication: "Calcium & Vitamin D deficiency", company: "Incepta Pharmaceuticals Ltd", image: "" },
+        { name: "Ferovit", Ingredients: "Ferrous Sulfate, Folic Acid", indication: "Iron deficiency anemia", company: "Beximco Pharmaceuticals Ltd", image: "" },
+        { name: "Ventolin", Ingredients: "Salbutamol 2mg", indication: "Asthma, COPD", company: "GSK", image: "" },
+        { name: "Asmalin", Ingredients: "Salbutamol 2mg", indication: "Asthma, COPD", company: "Square Pharmaceuticals Ltd", image: "" },
+        { name: "Bricanyl", Ingredients: "Terbutaline 2.5mg", indication: "Asthma, COPD", company: "AstraZeneca", image: "" },
+        { name: "Montelukast", Ingredients: "Montelukast 10mg", indication: "Asthma, Allergies", company: "ACI Limited", image: "" },
+        { name: "Singulair", Ingredients: "Montelukast 10mg", indication: "Asthma, Allergies", company: "Merck", image: "" },
+        { name: "Combivent", Ingredients: "Ipratropium Bromide, Salbutamol", indication: "Asthma, COPD", company: "Boehringer Ingelheim", image: "" },
+        { name: "Budecort", Ingredients: "Budesonide 200mcg", indication: "Asthma", company: "Cipla", image: "" },
+        { name: "Seretide", Ingredients: "Fluticasone, Salmeterol", indication: "Asthma, COPD", company: "GSK", image: "" },
+        { name: "Flixonase", Ingredients: "Fluticasone 50mcg", indication: "Allergic rhinitis", company: "GSK", image: "" },
+        { name: "Aerolin", Ingredients: "Salbutamol 2mg", indication: "Asthma, COPD", company: "Incepta Pharmaceuticals Ltd", image: "" },
+        { name: "Sertraline", Ingredients: "Sertraline 50mg", indication: "Depression, Anxiety", company: "Square Pharmaceuticals Ltd", image: "" },
+        { name: "Fluoxetine", Ingredients: "Fluoxetine 20mg", indication: "Depression, OCD", company: "ACI Limited", image: "" },
+        { name: "Clonazepam", Ingredients: "Clonazepam 0.5mg", indication: "Anxiety, Panic disorders", company: "Incepta Pharmaceuticals Ltd", image: "" },
+        { name: "Escitalopram", Ingredients: "Escitalopram 10mg", indication: "Depression, Anxiety", company: "Square Pharmaceuticals Ltd", image: "" },
+        { name: "Alprazolam", Ingredients: "Alprazolam 0.5mg", indication: "Anxiety, Panic disorders", company: "ACI Limited", image: "" },
+        { name: "Venlafaxine", Ingredients: "Venlafaxine 75mg", indication: "Depression, Anxiety", company: "Eskayef Pharmaceuticals Ltd", image: "" },
+        { name: "Amitriptyline", Ingredients: "Amitriptyline 25mg", indication: "Depression, Neuropathic pain", company: "Incepta Pharmaceuticals Ltd", image: "" },
+        { name: "Mirtazapine", Ingredients: "Mirtazapine 15mg", indication: "Depression, Insomnia", company: "Square Pharmaceuticals Ltd", image: "" },
+        { name: "Diazepam", Ingredients: "Diazepam 5mg", indication: "Anxiety, Muscle spasms", company: "Beximco Pharmaceuticals Ltd", image: "" },
+        { name: "Paroxetine", Ingredients: "Paroxetine 20mg", indication: "Depression, Anxiety", company: "Square Pharmaceuticals Ltd", image: "" }
     ];
 
     const boxContainer = document.getElementById("box-container");
     const searchInput = document.getElementById("searchInput");
+    const modal = document.getElementById("medicineModal");
+    const modalImg = document.getElementById("modalImg");
+    const modalName = document.getElementById("modalName");
+    const modalIngredients = document.getElementById("modalIngredients");
+    const modalIndication = document.getElementById("modalIndication");
+    const modalCompany = document.getElementById("modalCompany");
+    const similarMedicinesContainer = document.getElementById("similarMedicines");
+    const closeModal = document.querySelector(".close");
 
     function renderMedicines(medicinesArray) {
         boxContainer.innerHTML = "";
@@ -212,28 +421,74 @@
             box.appendChild(indication);
             box.appendChild(company);
 
+            // Add click event to open modal with medicine details
+            box.addEventListener("click", () => {
+                modalImg.src = medicine.image;
+                modalName.textContent = medicine.name;
+                modalIngredients.textContent = medicine.Ingredients;
+                modalIndication.textContent = medicine.indication;
+                modalCompany.textContent = medicine.company;
+                showSimilarMedicines(medicine);
+                modal.style.display = "block";
+            });
+
             boxContainer.appendChild(box);
         });
     }
 
-    function filterMedicines(searchTerm) {
-        const filteredMedicines = medicines.filter(medicine =>
-            medicine.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            medicine.Ingredients.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            medicine.indication.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            medicine.company.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        renderMedicines(filteredMedicines);
-    }
+    function showSimilarMedicines(selectedMedicine) {
+    similarMedicinesContainer.innerHTML = "";
+    
+    const similarMedicines = medicines.filter(medicine => 
+        medicine !== selectedMedicine && 
+        (medicine.Ingredients === selectedMedicine.Ingredients || medicine.indication === selectedMedicine.indication)
+    );
+    
+    similarMedicines.forEach(medicine => {
+        const box = document.createElement("div");
+        box.className = "box";
+
+        const img = document.createElement("img");
+        img.src = medicine.image;
+        img.alt = medicine.name;
+
+        const name = document.createElement("h3");
+        name.textContent = medicine.name;
+
+        box.appendChild(img);
+        box.appendChild(name);
+
+        box.addEventListener("click", () => {
+            modalImg.src = medicine.image;
+            modalName.textContent = medicine.name;
+            modalIngredients.textContent = medicine.Ingredients;
+            modalIndication.textContent = medicine.indication;
+            modalCompany.textContent = medicine.company;
+            showSimilarMedicines(medicine);
+        });
+
+        similarMedicinesContainer.appendChild(box);
+    });
+}
+
 
     searchInput.addEventListener("input", function() {
         filterMedicines(this.value.trim());
     });
 
+    closeModal.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+
     renderMedicines(medicines);
 });
 
-   
 </script>
 </body>
 </html>
